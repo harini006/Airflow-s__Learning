@@ -1,0 +1,160 @@
+# 📊 CSV Processing DAG using Apache Airflow
+
+This code demonstrates how to process a CSV file using Apache Airflow and Python.
+The DAG reads data from a CSV file, filters records based on a condition, and writes the result to a new file.
+
+---
+
+## 📌 DAG Overview
+
+* **DAG Name:** `csv_output_dispalyed_in_airflow_dag.py`
+* **Trigger Type:** Manual (no schedule)
+* **Task:** Read → Transform → Save CSV
+
+---
+
+## 🧾 Code Implementation
+
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from datetime import datetime
+import pandas as pd
+
+def process_data():
+    df = pd.read_csv("/home/harini/data/sample.csv")
+    df['Year'] = df['Year'].astype(int)
+
+    df_filtered = df[df['Year'] == 2023]
+
+    print("Total rows:", len(df_filtered))
+    print(df_filtered.head(5).to_string())
+
+    df_filtered.to_csv('/home/harini/data/output.csv', index=False)
+
+with DAG(
+    'csv_output_dispalyed_in_airflow_dag',
+    start_date=datetime(2024, 1, 1),
+    schedule_interval=None,
+    catchup=False
+) as dag:
+
+    task = PythonOperator(
+        task_id='process_csv',
+        python_callable=process_data
+    )
+```
+## 🧠 Code Explanation
+
+### 1. Import Libraries
+
+* `DAG` → Defines the workflow
+* `PythonOperator` → Executes Python function
+* `pandas` → Used for data processing
+* `datetime` → Sets DAG start date
+
+---
+
+### 2. Define Function: `process_data()`
+
+This function performs the complete data pipeline:
+
+#### 🔹 Step 1: Read CSV File
+
+```python id="dwnd4p"
+df = pd.read_csv("/home/harini/data/sample.csv")
+```
+
+👉 Loads data into a DataFrame
+
+---
+
+#### 🔹 Step 2: Data Type Conversion
+
+```python id="m2jdz2"
+df['Year'] = df['Year'].astype(int)
+```
+
+👉 Ensures `Year` column is integer
+
+---
+
+#### 🔹 Step 3: Filter Data
+
+```python id="apcmzz"
+df_filtered = df[df['Year'] == 2023]
+```
+
+👉 Keeps only records where Year = 2023
+
+---
+
+#### 🔹 Step 4: Print Output
+
+```python id="s4l9mr"
+print("Total rows:", len(df_filtered))
+print(df_filtered.head(5).to_string())
+```
+
+👉 Output appears in Airflow logs
+
+---
+
+#### 🔹 Step 5: Save Output CSV
+
+```python id="o6qnx3"
+df_filtered.to_csv('/home/harini/data/output.csv', index=False)
+```
+
+👉 Writes filtered data to new file
+
+---
+
+### 3. Define DAG
+
+```python id="y4g7p6"
+with DAG(
+    'csv_output_dispalyed_in_airflow_dag',
+    start_date=datetime(2024, 1, 1),
+    schedule_interval=None,
+    catchup=False
+)
+```
+
+* `dag_id` → Unique DAG name
+* `schedule_interval=None` → Runs only when triggered manually
+* `catchup=False` → No backfill runs
+
+---
+
+### 4. Create Task
+
+```python id="zt9c2m"
+task = PythonOperator(
+    task_id='process_csv',
+    python_callable=process_data
+)
+```
+
+👉 Executes the `process_data()` function
+
+---
+
+## 🔄 Workflow
+
+```text id="gyrbxn"
+Read CSV → Convert Data → Filter → Print → Save CSV
+```
+## 📊 Output
+
+### Logs in Airflow UI:
+Total rows: 120
+<first 5 rows of filtered data>
+
+### Output File:
+
+```text id="p2d4kn"
+/home/harini/data/output.csv
+```
+
+---
+
