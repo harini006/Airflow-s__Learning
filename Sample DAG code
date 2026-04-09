@@ -1,1 +1,111 @@
+# 🚀 First Airflow DAG
+This project demonstrates a simple DAG created using Apache Airflow.
+
+---
+
+## 📌 DAG Overview
+
+* DAG Name: `first_dag-- This is  python code that you need to create inside the DAG folder in linux and it should be ended with .py
+
+* Schedule: Daily
+* Task: Print a welcome message
+
+---
+
+## 🧾 Code Implementation
+
+```
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from datetime import datetime
+
+def hello():
+    print("Hello Harini! Welcome to Airflow 🚀")
+
+with DAG(
+    dag_id='first_dag',
+    start_date=datetime(2025, 1, 1),
+    schedule_interval='@daily',
+    catchup=False
+) as dag:
+
+    task1 = PythonOperator(
+        task_id='say_hello_to_Harini',
+        python_callable=hello
+    )
+
+    task1
+```
+
+==================================================================================
+## 🧠 Code Explanation
+========================
+### 1. Import Libraries
+
+* `DAG` → Defines the workflow
+* `PythonOperator` → Executes Python functions
+* `datetime` → Used to set start date
+
+---
+
+### 2. Define Function
+
+```python
+def hello():
+    print("Hello Harini! Welcome to Airflow 🚀")
+```
+
+* This function prints a message
+* It will be executed by Airflow
+
+---
+
+### 3. Define DAG
+
+* `dag_id='first_dag'` → Name of DAG will be displayed in UI
+* `schedule_interval='@daily'` → Runs daily
+* `catchup=False` → Skips past runs
+
+---
+
+### 4. Create Task
+
+* `task_id='say_hello_to_Harini'` → Task name
+* `python_callable=hello` → Calls function
+
+---
+
+## ▶️ How to Run
+
+```bash
+airflow webserver --port 8080
+airflow scheduler
+```
+
+Open in browser:
+
+```
+http://localhost:8080
+```
+
+---
+
+## 📊 Output
+
+Check logs in Airflow UI:
+
+```
+Hello Harini! Welcome to Airflow 🚀
+```
+
+---
+
+## 🛠️ Tech Stack
+
+* Apache Airflow
+* Python
+* Linux (WSL)
+* Git
+
+---
 
