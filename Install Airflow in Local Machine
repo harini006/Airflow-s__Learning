@@ -2,17 +2,18 @@
 
 Install Ubuntu using one of the following methods:
 
-* From Microsoft Store (recommended for Windows users)
-Or download from: https://ubuntu.com/download/desktop
+From Microsoft Store (recommended for Windows users)
+            Or 
+Download from: https://ubuntu.com/download/desktop
 
 ## ⚙️ Step 2: Update System Packages
-```
+
 >sudo apt update
-```
+
 ## 🐍 Step 3: Install Python & Virtual Environment
-```
+
 >sudo apt install python3-venv python3-full -y
-```
+
 Explanation:
 * **python3-venv** → Used to create virtual environments
 * **python3-full** → Provides complete Python support
@@ -29,10 +30,15 @@ You should see:
 (airflow_env)
 
 5. Set Airflow Home
-export AIRFLOW_HOME=~/airflow
+>export AIRFLOW_HOME=~/airflow
+Airflow will store everything here:
+~/airflow/
+ ├── dags/
+ ├── logs/
+ ├── airflow.db
 
 6. Install Airflow
-pip install "apache-airflow==2.9.0" \
+>pip install "apache-airflow==2.9.0" \
 --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.9.0/constraints-3.10.txt"
 
 7. Initialize Database
@@ -58,4 +64,4 @@ Terminal 2:
 http://localhost:8080-- open in browser to see airflow Dashboard
 ```
 
-Note: each and every time if you add any dag fn you need to restart the scheduler, if not the dag will not be reflected in UI. 
+Note: Each and Every time if you add any dag fn you need to restart the scheduler, if not the dag will not be reflected in UI. 
