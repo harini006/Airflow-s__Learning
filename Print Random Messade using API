@@ -1,0 +1,163 @@
+# 🚀 Welcome DAG using Apache Airflow
+This project demonstrates a simple workflow created using Apache Airflow.
+The DAG executes three tasks sequentially:
+1. Print a welcome message
+2. Print today’s date
+3. Fetch and display a random quote from an API
+
+---
+
+## 📌 DAG Overview
+
+* **DAG Name:** `welcome_dag.py`
+* **Schedule:** Daily at 11:00 PM
+* **Tasks:** 3 (Sequential execution)
+
+---
+
+## 🧾 Code Implementation
+
+```python
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from airflow.utils.dates import days_ago
+from datetime import datetime
+import requests
+
+def print_welcome():
+    print('Welcome to Airflow!')
+
+def print_date():
+    print('Today is {}'.format(datetime.today().date()))
+
+def print_random_quote():
+    import requests
+    try:
+        response = requests.get("https://zenquotes.io/api/random", timeout=5)
+        print("Status Code:", response.status_code)
+
+        data = response.json()
+        quote = data[0]['q']
+
+    except Exception as e:
+        print("API failed:", e)
+        quote = "Default Quote: Keep learning Airflow!"
+
+    print(f"Quote: {quote}")
+
+dag = DAG(
+    'welcome_dag',
+    default_args={'start_date': days_ago(1)},
+    schedule_interval='0 23 * * *',
+    catchup=False
+)
+
+print_welcome_task = PythonOperator(
+    task_id='print_welcome',
+    python_callable=print_welcome,
+    dag=dag
+)
+
+print_date_task = PythonOperator(
+    task_id='print_date',
+    python_callable=print_date,
+    dag=dag
+)
+
+print_random_quote_task = PythonOperator(
+    task_id='print_random_quote',
+    python_callable=print_random_quote,
+    dag=dag
+)
+
+print_welcome_task >> print_date_task >> print_random_quote_task
+```
+
+========================================================
+
+## 🧠 Code Explanation
+
+### 1. Import Libraries
+
+* `DAG` → Defines the workflow
+* `PythonOperator` → Executes Python functions
+* `days_ago(1)` → Sets start date to yesterday
+* `requests` → Used to call external API
+
+---
+
+### 2. Define Tasks (Functions)
+
+#### 🔹 `print_welcome()`
+
+Prints a welcome message:
+
+```text
+Welcome to Airflow!
+```
+
+---
+
+#### 🔹 `print_date()`
+
+Prints current system date:
+
+```text
+Today is YYYY-MM-DD
+```
+
+---
+
+#### 🔹 `print_random_quote()`
+
+* Calls API: `https://zenquotes.io/api/random`
+* Extracts quote from response
+* Handles failures using `try-except`
+
+👉 If API fails:
+
+```text
+Default Quote: Keep learning Airflow!
+```
+
+---
+
+### 3. Define DAG
+
+* `dag_id='welcome_dag'` → Unique DAG name
+* `schedule_interval='0 23 * * *'` → Runs daily at 11 PM
+* `catchup=False` → Skips past executions
+
+---
+
+### 4. Create Tasks
+
+Each task is created using `PythonOperator`:
+
+* `task_id` → Unique identifier
+* `python_callable` → Function to execute
+
+---
+
+### 5. Set Dependencies
+
+```python
+print_welcome_task >> print_date_task >> print_random_quote_task
+```
+
+👉 Execution order:
+
+```text
+print_welcome → print_date → print_random_quote
+```
+
+## 📊 Output
+
+Check logs in Airflow UI:
+
+```text
+Welcome to Airflow!
+Today is 2026-04-09
+Quote: Stay positive and keep learning!
+```
+
